@@ -27,15 +27,25 @@ workflow = StateGraph(AgentState, config_schema=GraphConfig)
 workflow.add_node("agent", call_tool_model)
 # node 2
 workflow.add_node("tools", tool_node)
+workflow.add_node("multi_choice_structured", multi_choice_structured)
 
 # entry
 workflow.set_entry_point("agent")
 
 # Conditional edge
-workflow.add_conditional_edges("agent", tools_condition)
+workflow.add_conditional_edges(
+    "agent", 
+    tools_condition
+)
+workflow.add_conditional_edges(
+    "agent", 
+    is_multi_choice, 
+    {"multi-choice": "multi_choice_structured", "not-multi-choice": END}
+)
 
 # We now add a normal edge.
 workflow.add_edge("tools", "agent")
+workflow.add_edge("multi_choice_structured", END)
 
 # **graph defined here**
 

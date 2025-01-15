@@ -35,8 +35,7 @@ def _get_response_model(model_name: str):
     else:
         raise ValueError(f"Unsupported model type: {model_name}")
 
-    # TODO: pass model for structured output
-    model = model.with_structured_output()
+    model = model.with_structured_output(MultipleChoiceResponse)
     return model
 
 
