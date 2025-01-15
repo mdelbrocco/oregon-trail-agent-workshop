@@ -37,12 +37,13 @@ def restock_tool(daily_usage: int, lead_time: int, safety_stock: int) -> int:
     print(f"\n Using restock tool!: {daily_usage=}, {lead_time=}, {safety_stock=} \n")
     return (daily_usage * lead_time) + safety_stock
 
-# TODO: implement the retriever tool
-## update get_vector_store function
-# vector_store = get_vector_store()
-## update tool with appropriate information so the agent knows how to invoke
-# retriever_tool = create_retriever_tool()
+## retriever tool (introduced in Step 3)
+vector_store = get_vector_store()
 
-# TODO: pass the retriever_tool and restock tool multiply is only meant as an example
-# tools = [retriever_tool, restock_tool]
-tools = [multiply, restock_tool]
+retriever_tool = create_retriever_tool(
+    vector_store.as_retriever(),
+    "get_directions",
+    "Search and return information related to which routes/paths/trails to take along your journey."
+)
+
+tools = [multiply, restock_tool, retriever_tool]
