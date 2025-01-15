@@ -21,28 +21,23 @@ load_dotenv()
 class GraphConfig(TypedDict):
     model_name: Literal["openai"]  # could add more LLM providers here
 
+workflow = StateGraph(AgentState, config_schema=GraphConfig)
 
-# TODO: define the graph to be used in testing
-# workflow = StateGraph(AgentState, config_schema=GraphConfig)
+# node 1
+workflow.add_node("agent", call_tool_model)
+# node 2
+workflow.add_node("tools", tool_node)
 
-# # Update otherwise it won't work dawg
+# entry
+workflow.set_entry_point("agent")
 
-# # node 1
-# workflow.add_node()
-# # node 2
-# workflow.add_node()
+# Conditional edge
+workflow.add_conditional_edges("agent", tools_condition)
 
-# # entry
-# workflow.set_entry_point()
+# We now add a normal edge.
+workflow.add_edge("tools", "agent")
 
-# # Conditional edge
-# workflow.add_conditional_edges()
+# **graph defined here**
 
-# # We now add a normal edge.
-# workflow.add_edge()
-
-# # **graph defined here**
-
-# # Compiled graph will be picked up by workflow
-# graph = workflow.compile()
-graph = None
+# Compiled graph will be picked up by workflow
+graph = workflow.compile()
